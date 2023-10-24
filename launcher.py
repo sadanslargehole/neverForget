@@ -1,11 +1,10 @@
 import traceback
-
+from tortoise import run_async
 import discord
 from discord.ext import commands
 from os import listdir
 import asyncio
-from util import loadconfig
-from classes.Models import loadDatabase
+from util import loadconfig, initDB
 from classes.bot import bot
 # declare intents
 # TODO: add proper intents
@@ -18,7 +17,7 @@ async def load():
         try:
             if blacklistedFiles.__contains__(i):
                 continue
-            i=i.removesuffix('.py')
+            i = i.removesuffix('.py')
             await bot.load_extension(f'cogs.{i}')
         except Exception as e:
             traceback.print_exception(e)
@@ -27,5 +26,6 @@ async def load():
         finally:
             print('loaded all cogs, no errors reported')
 asyncio.run(load())
+run_async(initDB())
 bot.owner_id = bot.config['ownerID']
 bot.run(bot.config['token'])

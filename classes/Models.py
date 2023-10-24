@@ -3,7 +3,6 @@ from tortoise import fields
 import discord
 
 
-
 class guild(Model):
     id = fields.BigIntField(pk=True)
     canUseBot = fields.BooleanField()

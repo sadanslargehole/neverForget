@@ -1,15 +1,19 @@
 import discord
 from discord.ext import commands
 from classes.bot import bot
-
+from classes.Models import guild
 
 class botEvents:
     def __init__(self, robot: bot):
         self.bot = robot
 
     @commands.Cog.listener("guild join")
-    async def guildJoin(self, guild: discord.Guild):
-        x = self.bot.getGuildOrNone(guild.id)
-        if not x:
-            # TODO: create the guild db entry
-            self.bot.guild_db.create()
+    async def guildJoin(self, guildJoined: discord.Guild):
+        if guild.filter(id=guildJoined.id).exists():
+
+
+    @commands.Cog.listener("message button click")
+    async def onButtonthingieClick(self, ):
+        # whitelist/blacklist
+        #
+        pass
