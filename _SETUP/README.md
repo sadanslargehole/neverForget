@@ -20,7 +20,7 @@ Do you want whitelist or blacklist mode?
 		- the description and name will be automatically setup
 		- move the channel to where you want it
 		- change any permissions that are necessary
-	- to use your own channel run `` `log setup [channelID]``
+	- to use your own channel run `` `log set [channelID]``
 ## Step 3
 - enable the bot
 	- run `` `enable``

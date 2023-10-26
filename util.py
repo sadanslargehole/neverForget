@@ -8,7 +8,7 @@ import classes.bot
 
 
 def loadconfig() -> dict[str, str]:
-    with open('./config.json',"r" ) as cfg:
+    with open('./config.json', "r") as cfg:
         return load(cfg)
 
 
