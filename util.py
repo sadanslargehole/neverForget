@@ -3,6 +3,7 @@ from json import load
 
 import discord
 from tortoise import Tortoise
+from classes.Models import guild
 
 import classes.bot
 
@@ -43,7 +44,7 @@ async def getChannelOrRand(guild: discord.Guild) -> discord.TextChannel:
             if isinstance(i, discord.TextChannel):
                 return i
 
-
+#FIXME - update setupGuild
 async def setupGuild(bot: classes.bot.bot, guild: discord.Guild, user: discord.User | None = None, channel: discord.TextChannel = None):
     if not user:
         user = await getInviterOrOwner(bot, guild)
@@ -60,3 +61,15 @@ async def setupGuild(bot: classes.bot.bot, guild: discord.Guild, user: discord.U
                      icon_url="https://slate.dan.onl/slate.png")
 
     await guild.get_channel(channel.id).send(embed=embedWlistBlist, allowed_mentions=discord.AllowedMentions.users, )
+
+async def genDefaultGuild(id:int) -> guild:
+    return await guild.create(
+            id=id,
+            canUseBot=True,
+            unpinChannel=None,
+            enabled=False,
+            whitelist = None,
+            whitelistedChannels = [],
+            blacklistedChannels = [],
+            blacklistedUsers = []
+        )

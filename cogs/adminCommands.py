@@ -47,12 +47,24 @@ class adminCommands(commands.Cog):
     async def mode(self, ctx: commands.Context):
         await ctx.reply("[usage](https://github.com/sadanslargehole/neverForget/blob/master/_SETUP/modeUsage.md)")
 
-    async def set(self, ctx:commands.Context, mode:str):
-        if mode == "wlist" or "whitelist":
-            # TODO:
-            pass
-        pass
-
+    @commands.group("mode")
+    @commands.has_guild_permissions(manage_guild=True)
+    @commands.command()
+    async def set(self, ctx: commands.Context, mode:str):
+        if not mode:
+            raise commands.MissingRequiredArgument(mode)
+        if mode.lower() == "wlist" or "whitelist":
+            dbguild = await guild[ctx.guild.id]
+            dbguild.whitelist = True
+            dbguild.save()
+            await ctx.message.add_reaction("✅")
+        elif mode.lower() == "blist" or "blacklist":
+            dbguild = await guild[ctx.guild.id]
+            dbguild.whitelist = False
+            await dbguild.save()
+            await ctx.message.add_reaction("✅")
+        else:
+            raise commands.BadArgument(mode)
 
 async def setup(bot: commands.Bot):
     await bot.add_cog(adminCommands(bot))
