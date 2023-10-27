@@ -1,6 +1,8 @@
 import discord
 from discord.ext import commands
 from classes.Models import guild, user
+from format import formatMessage
+from util import getOrCreateGuild
 
 guild_fields = ["canUseBot", "unpinChannel", "enabled", 'whitelist', 'whitelistedChannels', 'blacklistedChannels', 'blacklistedUsers']
 
@@ -9,13 +11,23 @@ class adminCommands(commands.Cog):
     def __init__(self, bot: commands.Bot):
         self.bot = bot
 
+    @commands.has_guild_permissions(manage_guild=True)
+    @commands.group(invoke_without_command=True)
+    async def wlist(self, ctx: commands.Context):
+        await ctx.reply("LINK TO WHITELSIT USAGE")
+
+    @commands.has_guild_permissions(manage_guild=True)
+    @wlist.command(name='add')
+    async def wlist_add(self, ctx:commands.Context, channelID):
+        guildDB = await getOrCreateGuild(ctx.guild.id)
+        guildDB.whitelistedChannels =
+
     @commands.guild_only()
     @commands.has_guild_permissions(manage_guild=True)
     @commands.group(invoke_without_command=True)
-    @commands.command()
     # lifted right from [letters](https://github.com/keli5/LettersBotPY/blob/master/cogs/owner.py) ty :3
     async def log(self, ctx: commands.Context):
-        guild_entry = await guild[ctx.guild.id]
+        guild_entry = await getOrCreateGuild(ctx.guild.id)
         getEmbed = discord.Embed(
             title=f"Guild.{ctx.guild.id}"
         )
@@ -28,35 +40,45 @@ class adminCommands(commands.Cog):
                 pass
         await ctx.reply(embed=getEmbed)
 
-    @commands.group('log')
-    @commands.command()
+    # TODO: Do this
+    @log.command()
+    @commands.has_guild_permissions(manage_guild=True)
     async def setup(self, ctx: commands.Context):
         # TODO: create channel with perms
         pass
 
-    @commands.group('log')
-    @commands.command()
-    async def set(self, ctx: commands.Context, channelID):
-        await guild.filter(id=ctx.guild.id).update(unpinChannel=channelID)
-        await ctx.message.add_reaction('✔')
+    @log.command(name="msg")
+    @commands.has_guild_permissions(manage_guild=True)
+    async def log_msg(self, ctx: commands.Context, messageID):
+        after = await ctx.channel.fetch_message(messageID)
+        guildDB = await getOrCreateGuild(after.guild.id)
+        if not guildDB.unpinChannel:
+            return
+        embed = await formatMessage(after)
+        await after.guild.get_channel(guildDB.unpinChannel).send(embed=embed)
 
+    @log.command(name="set")
+    @commands.has_guild_permissions(manage_guild=True)
+    async def log_set(self, ctx: commands.Context, arg1):
+        guildDB = await getOrCreateGuild(ctx.guild.id)
+        guildDB.unpinChannel = arg1
+        await guildDB.save()
+        await ctx.message.add_reaction('✔')
 
     @commands.has_guild_permissions(manage_guild=True)
     @commands.group(invoke_without_command=True)
-    @commands.command()
     async def mode(self, ctx: commands.Context):
         await ctx.reply("[usage](https://github.com/sadanslargehole/neverForget/blob/master/_SETUP/modeUsage.md)")
 
-    @commands.group("mode")
     @commands.has_guild_permissions(manage_guild=True)
-    @commands.command()
-    async def set(self, ctx: commands.Context, mode:str):
+    @mode.command(name="set")
+    async def mode_set(self, ctx: commands.Context, mode: str):
         if not mode:
             raise commands.MissingRequiredArgument(mode)
         if mode.lower() == "wlist" or "whitelist":
             dbguild = await guild[ctx.guild.id]
             dbguild.whitelist = True
-            dbguild.save()
+            await dbguild.save()
             await ctx.message.add_reaction("✅")
         elif mode.lower() == "blist" or "blacklist":
             dbguild = await guild[ctx.guild.id]
@@ -65,6 +87,7 @@ class adminCommands(commands.Cog):
             await ctx.message.add_reaction("✅")
         else:
             raise commands.BadArgument(mode)
+
 
 async def setup(bot: commands.Bot):
     await bot.add_cog(adminCommands(bot))

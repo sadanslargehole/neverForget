@@ -1,4 +1,4 @@
-/util.py
-TOOD.md
+/TODO.md
 /config.json
-.idea
+/.idea
+*sqlite3*

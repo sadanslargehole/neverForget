@@ -7,8 +7,8 @@ class cogName(commands.Cog):
         self.bot = bot
 
     @commands.command()
-    async def info(self, ctx: commands.Context, *args):
-        await ctx.message.reply("made by <@>\ncontact to report bugs\n[source code](https://example.com) is avilable "
+    async def info(self, ctx: commands.Context):
+        await ctx.message.reply("made by <@521819891141967883>\ncontact to report bugs\n[source code](https://example.com) is avilable "
                                 "on github")
 
 

@@ -5,9 +5,7 @@ from discord.ext import commands
 import discord
 from typing import *
 
-from discord.ext.commands import HelpCommand
-from discord.ext.commands._types import BotT
-from discord.ext.commands.bot import PrefixType, _default
+from discord.ext.commands import errors
 
 
 class bot(commands.Bot):
@@ -16,11 +14,8 @@ class bot(commands.Bot):
 
     def __init__(
             self,
-            command_prefix: PrefixType[BotT] = "`",
+            command_prefix:str= "`",
             *,
-            help_command: Optional[HelpCommand] = _default,
-            tree_cls: Type[app_commands.CommandTree[Any]] = app_commands.CommandTree,
-            description: Optional[str] = None,
             intents: discord.Intents = discord.Intents.all(),
             config: dict[str, str],
             **options: Any,
@@ -28,3 +23,4 @@ class bot(commands.Bot):
         super().__init__(command_prefix=command_prefix, intents=intents)
 
         self.config = config
+    def on_command_error(self, context: commands.Context, exception: errors.CommandError, /) -> None:
