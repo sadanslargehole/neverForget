@@ -84,6 +84,7 @@ def genEnableMessage(guildDB: guild) -> tuple[bool, str]:
     blacklistedChannels = "[2;36mINFO - Blacklisted channels: $CHANNELS$[0m\n"
     warnNoBlacklistedChannels = "[2;33mWARN - Mode is blacklist and there are no blacklisted channels[0m\n"
     errorNoLogChannel = "[2;31mERROR - No logging channel set[0m\n"
+    errorNoModeSet = "[2;31mERROR - No logging channel set[0m\n"
     errorNoWhitelistedChannels = "[2;31mERROR - Mode is whitelist and there are no whitelisted channels[0m\n"
     noErrorsFound = "[1;2mNo Errors Found, Logging Enabled[0m\n"
     errorsFound = "[2;41mErrors Found, Aborted[0m\n"
@@ -94,7 +95,9 @@ def genEnableMessage(guildDB: guild) -> tuple[bool, str]:
     else:
         errors = True
         message += errorNoLogChannel
-    if guildDB.whitelist:
+    if guildDB.whitelist is None:
+        message += errorNoModeSet
+    elif guildDB.whitelist:
         message += modeInfoWhitelist
         if len(guildDB.whitelistedChannels) == 0:
             errors = True
