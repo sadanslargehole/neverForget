@@ -47,7 +47,7 @@ class adminCommands(commands.Cog):
             attr = ""
             try:
                 attr = getattr(guild_entry, field)
-                if field == 'unpinChannel':
+                if field == 'unpinChannel' and attr:
                     getEmbed.add_field(name=field, value=f'<#{attr}>')
                 else:
                     getEmbed.add_field(name=field, value=attr)
