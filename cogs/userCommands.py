@@ -12,7 +12,7 @@ class cogName(commands.Cog):
     @commands.cooldown(2, 60, BucketType.user)
     async def info(self, ctx: commands.Context):
         await ctx.message.reply(
-            "made by <@521819891141967883>\ncontact to report bugs\n[source code](https://github.com/sadanslargehole/neverForget) is avilable "
+            "made by <@521819891141967883>\ncontact to report bugs\n[source code](<https://github.com/sadanslargehole/neverForget>) is avilable "
             "on github")
 
     @commands.command()
