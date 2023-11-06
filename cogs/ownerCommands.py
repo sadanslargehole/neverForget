@@ -49,12 +49,11 @@ class ownerCommands(commands.Cog):
     @db.command(name='wipe')
     @commands.is_owner()
     # wipes and refreshed the guild db
-    # TODO: fix this horror code
     async def db_wipe(self, ctx: commands.Context, guildID=None):
         guildID = int(guildID or ctx.guild.id)
-        await getOrCreateGuild(guildID)
-        guildDB = await guild[guildID]
-        await guildDB.delete()
+        guildDB = await guild.get_or_none(id=guildID)
+        if guildDB:
+            await guildDB.delete()
         await getOrCreateGuild(guildID)
         await ctx.message.add_reaction("✔")
 
