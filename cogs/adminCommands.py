@@ -5,7 +5,7 @@ from discord.ext import commands
 import util
 from classes.Models import guild, user
 from format import formatMessage
-from util import getOrCreateGuild
+from util import getOrCreateGuild, genEnableMessage
 from typing import Union, Dict
 
 guild_fields = ["canUseBot", "unpinChannel", "enabled", 'whitelist', 'whitelistedChannels', 'blacklistedChannels',
@@ -162,7 +162,7 @@ class adminCommands(commands.Cog):
     @mode.command(name="set")
     async def mode_set(self, ctx: commands.Context, mode: str):
         if not mode:
-            raise commands.MissingRequiredArgument("specify a mode")
+            raise commands.MissingRequiredArgument(ctx.command.params['mode'])
         if mode.lower() == "wlist" or "whitelist":
             dbguild = await getOrCreateGuild(ctx.guild.id)
             dbguild.whitelist = True
@@ -180,7 +180,7 @@ class adminCommands(commands.Cog):
     @commands.has_guild_permissions(manage_guild=True)
     async def enable(self, ctx: commands.Context):
         guildDB = await getOrCreateGuild(ctx.guild.id)
-        result, message = util.genEnableMessage(guildDB)
+        result, message = genEnableMessage(guildDB)
         if result:
             await ctx.send(message)
         else:
