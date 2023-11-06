@@ -1,8 +1,8 @@
 # SETUP
 ## NOTES
 
-	"`" is the default perfix, if you are self-hosting the bot and have a custom prefix set, replace it with that
-	to report any bugs, contact @sadanslargehole on discord <@521819891141967883>
+	"`" is the default perfix, if you are self-hosting the bot and have a custom prefix set, replace it with that.
+	To report any bugs, contact @sadanslargehole on discord <@521819891141967883>
 # MESSAGES IN PRIVATE CHANNELS WILL BE LOGGED BY DEFAULT IF BLACKLIST MODE IS ON, AND SAID CHANNELS ARE NOT BLACKLISTED
 ## Step One
 Do you want whitelist or blacklist mode?

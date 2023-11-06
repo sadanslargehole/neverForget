@@ -81,6 +81,5 @@ class ownerCommands(commands.Cog):
                 pass
         await ctx.reply(embed=getEmbed)
 
-
 async def setup(bot: classes.bot.bot):
     await bot.add_cog(ownerCommands(bot))
