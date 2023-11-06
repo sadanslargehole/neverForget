@@ -38,7 +38,7 @@ class ownerCommands(commands.Cog):
     @commands.is_owner()
     @commands.group(invoke_without_command=True)
     async def db(self, ctx: commands.Context, *args):
-        await ctx.reply("nope :3")
+        await ctx.send("nope :3")
 
     @commands.command()
     @commands.is_owner()
@@ -51,8 +51,7 @@ class ownerCommands(commands.Cog):
     # wipes and refreshed the guild db
     # TODO: fix this horror code
     async def db_wipe(self, ctx: commands.Context, guildID=None):
-        guildID = guildID or ctx.guild.id
-        guildID = int(guildID)
+        guildID = int(guildID or ctx.guild.id)
         await getOrCreateGuild(guildID)
         guildDB = await guild[guildID]
         await guildDB.delete()
@@ -62,8 +61,7 @@ class ownerCommands(commands.Cog):
     @commands.is_owner()
     @db.command(name='get')
     async def db_get(self, ctx: commands.Context, guildID=None):
-        guildID = guildID or ctx.guild.id
-        guildID = int(guildID)
+        guildID = int(guildID or ctx.guild.id)
         guild_entry = await getOrCreateGuild(guildID)
         getEmbed = discord.Embed(
             title=f"Guild.{guildID}"

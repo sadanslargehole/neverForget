@@ -25,7 +25,7 @@ class adminCommands(commands.Cog):
     @commands.guild_only()
     @commands.has_guild_permissions(manage_guild=True)
     @wlist.command(name='add')
-    async def wlist_add(self, ctx: commands.Context, channelID):
+    async def wlist_add(self, ctx: commands.Context, channelID=None):
         channelID = int(channelID or ctx.channel.id)
         guildDB = await getOrCreateGuild(ctx.guild.id)
         if guildDB.whitelistedChannels.__contains__(channelID):
@@ -44,7 +44,7 @@ class adminCommands(commands.Cog):
     @commands.guild_only()
     @wlist.command(name='rm')
     @commands.has_guild_permissions(manage_guild=True)
-    async def wlist_rm(self, ctx: commands.Context, channelID):
+    async def wlist_rm(self, ctx: commands.Context, channelID=None):
         channelID = int(channelID or ctx.channel.id)
         guildDB = await getOrCreateGuild(ctx.guild.id)
         if guildDB.whitelistedChannels.__contains__(channelID):
@@ -67,7 +67,7 @@ class adminCommands(commands.Cog):
     @commands.group(invoke_without_command=True)
     # lifted right from [letters](https://github.com/keli5/LettersBotPY/blob/master/cogs/owner.py) ty :3
     async def log(self, ctx: commands.Context):
-        await ctx.reply("log usage")
+        await ctx.reply("TODO: send current log status")
 
     @commands.guild_only()
     @log.command(name="setup")
@@ -96,6 +96,7 @@ class adminCommands(commands.Cog):
     @log.command(name="msg")
     @commands.has_guild_permissions(manage_guild=True)
     async def log_msg(self, ctx: commands.Context, messageID):
+        messageID = int(messageID)
         after = await ctx.channel.fetch_message(messageID)
         guildDB = await getOrCreateGuild(after.guild.id)
         if not guildDB.unpinChannel:
@@ -107,6 +108,7 @@ class adminCommands(commands.Cog):
     @log.command(name="set")
     @commands.has_guild_permissions(manage_guild=True)
     async def log_set(self, ctx: commands.Context, arg1):
+        arg1 = int(arg1)
         guildDB = await getOrCreateGuild(ctx.guild.id)
         guildDB.unpinChannel = arg1
         await guildDB.save()
@@ -173,6 +175,18 @@ class adminCommands(commands.Cog):
             await ctx.message.add_reaction("✅")
         else:
             raise commands.BadArgument(mode)
+
+    @commands.command(name='enable')
+    @commands.has_guild_permissions(manage_guild=True)
+    async def enable(self, ctx: commands.Context):
+        guildDB = await getOrCreateGuild(ctx.guild.id)
+        result, message = util.genEnableMessage(guildDB)
+        if result:
+            await ctx.send(message)
+        else:
+            await ctx.send(message)
+            guildDB.enabled = True
+            await guildDB.save()
 
 
 async def setup(bot: commands.Bot):
