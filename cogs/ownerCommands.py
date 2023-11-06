@@ -1,13 +1,25 @@
 import discord
 from discord.ext import commands
+from discord.ext.commands import BucketType
 
+import classes.bot
 from classes.Models import guild
 from util import genDefaultGuild
 
 
 class ownerCommands(commands.Cog):
-    def __init__(self, bot: commands.Bot):
+    def __init__(self, bot: classes.bot.bot):
         self.bot = bot
+
+    @commands.is_owner()
+    @commands.command()
+    async def enable(self, ctx: commands.Context):
+        self.bot.enabled = True
+
+    @commands.is_owner()
+    @commands.command()
+    async def disable(self, ctx: commands.Context):
+        self.bot.enabled = False
 
     @commands.is_owner()
     @commands.command(aliases=['quit'])
@@ -47,6 +59,5 @@ class ownerCommands(commands.Cog):
         await ctx.message.add_reaction('✔')
 
 
-async def setup(bot: commands.Bot):
+async def setup(bot: classes.bot.bot):
     await bot.add_cog(ownerCommands(bot))
-
