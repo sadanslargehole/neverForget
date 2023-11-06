@@ -1,6 +1,9 @@
 import discord
 from discord.ext import commands
+
+import util
 from classes.Models import guild
+from util import setupGuild, getOrCreateGuild
 
 
 class botEvents(commands.Cog):
@@ -9,7 +12,8 @@ class botEvents(commands.Cog):
 
     @commands.Cog.listener("guild join")
     async def guildJoin(self, guildJoined: discord.Guild):
-        guildDB = guild.get_or_none(id)
+        guildDB = await getOrCreateGuild(guild.id)
+        await setupGuild(self.bot, guildJoined)
 
 
 async def setup(bot: commands.Bot):

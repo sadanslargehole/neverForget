@@ -44,6 +44,7 @@ async def getChannelOrRand(guild: discord.Guild) -> discord.TextChannel:
             if isinstance(i, discord.TextChannel):
                 return i
 
+
 # FIXME - update setupGuild
 async def setupGuild(bot: classes.bot.bot, guild: discord.Guild, user: discord.User | None = None, channel: discord.TextChannel = None):
     if not user:

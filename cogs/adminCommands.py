@@ -1,6 +1,8 @@
 import discord
 from discord import Role, Member, Object, PermissionOverwrite
 from discord.ext import commands
+
+import util
 from classes.Models import guild, user
 from format import formatMessage
 from util import getOrCreateGuild
@@ -18,6 +20,12 @@ class adminCommands(commands.Cog):
     @commands.group(invoke_without_command=True)
     async def wlist(self, ctx: commands.Context):
         await ctx.reply("LINK TO WHITELSIT USAGE")
+
+    @commands.has_guild_permissions(manage_guild=True)
+    @commands.command(name="setupMessage")
+    async def setupMessage(self, ctx: commands.Context):
+        await util.setupGuild(self.bot, ctx.guild, ctx.author, ctx.channel)
+        await ctx.message.add_reaction('✔')
 
     @commands.has_guild_permissions(manage_guild=True)
     @wlist.command(name='add')
