@@ -14,12 +14,12 @@ class ownerCommands(commands.Cog):
 
     @commands.is_owner()
     @commands.command()
-    async def enable(self, ctx: commands.Context):
+    async def enablebot(self, ctx: commands.Context):
         self.bot.enabled = True
 
     @commands.is_owner()
     @commands.command()
-    async def disable(self, ctx: commands.Context):
+    async def disablebot(self, ctx: commands.Context):
         self.bot.enabled = False
 
     @commands.is_owner()

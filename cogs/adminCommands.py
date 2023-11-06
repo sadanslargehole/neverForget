@@ -16,33 +16,51 @@ class adminCommands(commands.Cog):
     def __init__(self, bot: commands.Bot):
         self.bot = bot
 
+    @commands.guild_only()
     @commands.has_guild_permissions(manage_guild=True)
     @commands.group(invoke_without_command=True)
     async def wlist(self, ctx: commands.Context):
         await ctx.reply("LINK TO WHITELSIT USAGE")
 
-    @commands.has_guild_permissions(manage_guild=True)
-    @commands.command(name="setupMessage")
-    async def setupMessage(self, ctx: commands.Context):
-        await util.setupGuild(self.bot, ctx.guild, ctx.author, ctx.channel)
-        await ctx.message.add_reaction('✔')
-
+    @commands.guild_only()
     @commands.has_guild_permissions(manage_guild=True)
     @wlist.command(name='add')
     async def wlist_add(self, ctx: commands.Context, channelID):
-        channelID = int(channelID or ctx.guild.id)
+        channelID = int(channelID or ctx.channel.id)
         guildDB = await getOrCreateGuild(ctx.guild.id)
         if guildDB.whitelistedChannels.__contains__(channelID):
             await ctx.reply("whitelisted channels already contains this channel, aborting")
             return
         elif guildDB.blacklistedChannels.__contains__(channelID):
-            await ctx.reply("blacklisted channels already contains this channel, removing")
+            await ctx.reply("blacklisted channels already contains this channel, removing and adding to whitelist")
             guildDB.blacklistedChannels.remove(channelID)
             guildDB.whitelistedChannels.append(channelID)
             await guildDB.save()
         else:
             guildDB.whitelistedChannels.append(channelID)
+            await ctx.message.add_reaction('✔')
             await guildDB.save()
+
+    @commands.guild_only()
+    @wlist.command(name='rm')
+    @commands.has_guild_permissions(manage_guild=True)
+    async def wlist_rm(self, ctx: commands.Context, channelID):
+        channelID = int(channelID or ctx.channel.id)
+        guildDB = await getOrCreateGuild(ctx.guild.id)
+        if guildDB.whitelistedChannels.__contains__(channelID):
+            guildDB.whitelistedChannels.remove(channelID)
+            await guildDB.save()
+            await ctx.message.add_reaction('✔')
+            return
+        else:
+            await ctx.reply("Channel is not in whitelist")
+
+    @commands.guild_only()
+    @commands.has_guild_permissions(manage_guild=True)
+    @commands.command(name="setupMessage")
+    async def setupMessage(self, ctx: commands.Context):
+        await util.setupGuild(self.bot, ctx.guild, ctx.author, ctx.channel)
+        await ctx.message.add_reaction('✔')
 
     @commands.guild_only()
     @commands.has_guild_permissions(manage_guild=True)
@@ -51,6 +69,7 @@ class adminCommands(commands.Cog):
     async def log(self, ctx: commands.Context):
         await ctx.reply("log usage")
 
+    @commands.guild_only()
     @log.command(name="setup")
     @commands.has_guild_permissions(manage_guild=True)
     async def log_setup(self, ctx: commands.Context):
@@ -73,6 +92,7 @@ class adminCommands(commands.Cog):
         await guildDB.save()
         await ctx.message.add_reaction('✔')
 
+    @commands.guild_only()
     @log.command(name="msg")
     @commands.has_guild_permissions(manage_guild=True)
     async def log_msg(self, ctx: commands.Context, messageID):
@@ -83,6 +103,7 @@ class adminCommands(commands.Cog):
         embed = await formatMessage(after)
         await after.guild.get_channel(guildDB.unpinChannel).send(embed=embed)
 
+    @commands.guild_only()
     @log.command(name="set")
     @commands.has_guild_permissions(manage_guild=True)
     async def log_set(self, ctx: commands.Context, arg1):
@@ -91,17 +112,21 @@ class adminCommands(commands.Cog):
         await guildDB.save()
         await ctx.message.add_reaction('✔')
 
+    @commands.guild_only()
     @commands.group(invoke_without_command=True)
     @commands.has_guild_permissions(manage_guild=True)
     async def blist(self, ctx: commands.Context):
         await ctx.reply("Link to `blist` usage")
 
+    @commands.guild_only()
     @commands.has_guild_permissions(manage_guild=True)
     @blist.command(name='add')
     async def blist_add(self, ctx: commands.Context, channelID):
         channelID = channelID or ctx.channel.id
         channelID = int(channelID)
         guildDB = await getOrCreateGuild(ctx.guild.id)
+        if guildDB.blacklistedChannels.__contains__(channelID):
+            await ctx.send()
         if guildDB.whitelistedChannels.__contains__(channelID):
             await ctx.send("info: channel is already in whitelist\nremoving and adding to blacklist")
             guildDB.whitelistedChannels.remove(channelID)
@@ -109,6 +134,7 @@ class adminCommands(commands.Cog):
         await guildDB.save()
         await ctx.message.add_reaction("✅")
 
+    @commands.guild_only()
     @commands.has_guild_permissions(manage_guild=True)
     @blist.command(name='rm')
     async def blist_rm(self, ctx: commands.Context, channelID):
@@ -123,11 +149,13 @@ class adminCommands(commands.Cog):
             await ctx.send("the channel is not blacklisted, aborting")
             await ctx.message.add_reaction("❌")
 
+    @commands.guild_only()
     @commands.has_guild_permissions(manage_guild=True)
     @commands.group(invoke_without_command=True)
     async def mode(self, ctx: commands.Context):
         await ctx.reply("[usage](https://github.com/sadanslargehole/neverForget/blob/master/_SETUP/modeUsage.md)")
 
+    @commands.guild_only()
     @commands.has_guild_permissions(manage_guild=True)
     @mode.command(name="set")
     async def mode_set(self, ctx: commands.Context, mode: str):
