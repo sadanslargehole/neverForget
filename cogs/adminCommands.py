@@ -32,6 +32,7 @@ class adminCommands(commands.Cog):
     async def wlist_add(self, ctx: commands.Context, channelID):
         guildDB = await getOrCreateGuild(ctx.guild.id)
         guildDB.whitelistedChannels.append(channelID)
+        await guildDB.save()
 
     @commands.guild_only()
     @commands.has_guild_permissions(manage_guild=True)
