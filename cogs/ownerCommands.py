@@ -50,7 +50,7 @@ class ownerCommands(commands.Cog):
     @commands.is_owner()
     # wipes and refreshed the guild db
     # TODO: fix this horror code
-    async def db_wipe(self, ctx: commands.Context, guildID):
+    async def db_wipe(self, ctx: commands.Context, guildID=None):
         guildID = guildID or ctx.guild.id
         guildID = int(guildID)
         await getOrCreateGuild(guildID)
@@ -80,6 +80,7 @@ class ownerCommands(commands.Cog):
             except AttributeError:
                 pass
         await ctx.reply(embed=getEmbed)
+
 
 async def setup(bot: classes.bot.bot):
     await bot.add_cog(ownerCommands(bot))
