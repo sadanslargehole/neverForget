@@ -61,7 +61,7 @@ class ownerCommands(commands.Cog):
 
     @commands.is_owner()
     @db.command(name='get')
-    async def db_get(self, ctx: commands.Context, guildID):
+    async def db_get(self, ctx: commands.Context, guildID=None):
         guildID = guildID or ctx.guild.id
         guildID = int(guildID)
         guild_entry = await getOrCreateGuild(guildID)
