@@ -35,7 +35,8 @@ class ownerCommands(commands.Cog):
 
     @db.command()
     @commands.is_owner()
-    async def genGuildDB(self, ctx: commands.Context, guildID: int | None = None):
+    # wipes and refreshed the guild db
+    async def wipe(self, ctx: commands.Context, guildID: int | None = None):
         if isinstance(ctx.channel, discord.DMChannel) and not guildID:
             raise commands.MissingRequiredArgument(ctx.command.params['guildID'])
         guildID = guildID or ctx.guild.id
