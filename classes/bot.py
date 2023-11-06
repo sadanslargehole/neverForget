@@ -4,6 +4,7 @@ from discord import app_commands
 from discord.ext import commands
 import discord
 from typing import *
+from random import choice
 
 from discord.ext.commands import errors
 
@@ -14,10 +15,11 @@ cooldown_texts = ["Hey there.", "Hold on a second!", "pls wait...", "Cooldown.."
 class bot(commands.Bot):
     config: dict[str, str]
     setup: dict[discord.User, discord.TextChannel]
+    enabled: bool = True
 
     def __init__(
             self,
-            command_prefix:str= "`",
+            command_prefix: str = "`",
             *,
             intents: discord.Intents = discord.Intents.all(),
             config: dict[str, str],
@@ -26,6 +28,14 @@ class bot(commands.Bot):
         super().__init__(command_prefix=command_prefix, intents=intents)
 
         self.config = config
+
+    async def on_message(self, message: discord.Message, /) -> None:
+        if self.enabled:
+            await self.process_commands(message)
+        elif message.author.id == self.owner_id:
+            await self.process_commands(message)
+        else:
+            raise Exception("the bot is disabled, sorry :(")
 
     # stolen from letters
     async def on_command_error(self, ctx: commands.Context, exe: errors.CommandError, /) -> None:
@@ -68,7 +78,7 @@ class bot(commands.Bot):
         if isinstance(exe, commands.MissingRequiredArgument):
             ctx.command.reset_cooldown(ctx)
         elif isinstance(exe, commands.CommandOnCooldown):
-            errembed.title = random.choice(cooldown_texts)
+            errembed.title = choice(cooldown_texts)
         else:
             print(f"{excname}: {exe}")
 

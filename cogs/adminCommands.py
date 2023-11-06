@@ -1,6 +1,8 @@
 import discord
 from discord import Role, Member, Object, PermissionOverwrite
 from discord.ext import commands
+
+import util
 from classes.Models import guild, user
 from format import formatMessage
 from util import getOrCreateGuild
@@ -20,10 +22,17 @@ class adminCommands(commands.Cog):
         await ctx.reply("LINK TO WHITELSIT USAGE")
 
     @commands.has_guild_permissions(manage_guild=True)
+    @commands.command(name="setupMessage")
+    async def setupMessage(self, ctx: commands.Context):
+        await util.setupGuild(self.bot, ctx.guild, ctx.author, ctx.channel)
+        await ctx.message.add_reaction('✔')
+
+    @commands.has_guild_permissions(manage_guild=True)
     @wlist.command(name='add')
     async def wlist_add(self, ctx: commands.Context, channelID):
         guildDB = await getOrCreateGuild(ctx.guild.id)
         guildDB.whitelistedChannels.append(channelID)
+        await guildDB.save()
 
     @commands.guild_only()
     @commands.has_guild_permissions(manage_guild=True)
@@ -38,7 +47,11 @@ class adminCommands(commands.Cog):
             attr = ""
             try:
                 attr = getattr(guild_entry, field)
-                getEmbed.add_field(name=field, value=attr)
+                if field == 'unpinChannel' and attr:
+                    getEmbed.add_field(name=field, value=f'<#{attr}>')
+                else:
+                    getEmbed.add_field(name=field, value=attr)
+
             except AttributeError:
                 pass
         await ctx.reply(embed=getEmbed)

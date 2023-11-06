@@ -44,6 +44,7 @@ async def getChannelOrRand(guild: discord.Guild) -> discord.TextChannel:
             if isinstance(i, discord.TextChannel):
                 return i
 
+
 # FIXME - update setupGuild
 async def setupGuild(bot: classes.bot.bot, guild: discord.Guild, user: discord.User | None = None, channel: discord.TextChannel = None):
     if not user:
@@ -51,7 +52,7 @@ async def setupGuild(bot: classes.bot.bot, guild: discord.Guild, user: discord.U
     if not channel:
         channel = getChannelOrRand(guild)
 
-    await guild.get_channel(channel.id).send(content=f"{user.mention} \n# SETUP THE BOT HERE\nhttps://github.com/sadanslargehole/neverForget/blob/master/_SETUP/README.md", allowed_mentions=discord.AllowedMentions.users, )
+    await guild.get_channel(channel.id).send(content=f"{user.mention} \n# SETUP THE BOT HERE\nhttps://github.com/sadanslargehole/neverForget/blob/master/_SETUP/README.md", allowed_mentions=discord.AllowedMentions(users=True, replied_user=True, everyone=False, roles=False) )
 
 
 async def getOrCreateGuild(gID: int) -> guild:
