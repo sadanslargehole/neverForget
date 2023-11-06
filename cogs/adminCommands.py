@@ -39,27 +39,11 @@ class adminCommands(commands.Cog):
     @commands.group(invoke_without_command=True)
     # lifted right from [letters](https://github.com/keli5/LettersBotPY/blob/master/cogs/owner.py) ty :3
     async def log(self, ctx: commands.Context):
-        guild_entry = await getOrCreateGuild(ctx.guild.id)
-        getEmbed = discord.Embed(
-            title=f"Guild.{ctx.guild.id}"
-        )
-        for field in guild_fields:
-            attr = ""
-            try:
-                attr = getattr(guild_entry, field)
-                if field == 'unpinChannel' and attr:
-                    getEmbed.add_field(name=field, value=f'<#{attr}>')
-                else:
-                    getEmbed.add_field(name=field, value=attr)
+        await ctx.reply("log usage")
 
-            except AttributeError:
-                pass
-        await ctx.reply(embed=getEmbed)
-
-    # TODO: Do this
-    @log.command()
+    @log.command(name="setup")
     @commands.has_guild_permissions(manage_guild=True)
-    async def setup(self, ctx: commands.Context):
+    async def log_setup(self, ctx: commands.Context):
         channel = await ctx.guild.create_text_channel('Pinned-Messages-Log')
         # allow roles to send messages
         overites: Dict[Union[Role, Member, Object], PermissionOverwrite] = {
@@ -102,18 +86,50 @@ class adminCommands(commands.Cog):
     async def mode(self, ctx: commands.Context):
         await ctx.reply("[usage](https://github.com/sadanslargehole/neverForget/blob/master/_SETUP/modeUsage.md)")
 
+    @commands.group(invoke_without_command=True)
+    @commands.has_guild_permissions(manage_guild=True)
+    async def blist(self, ctx: commands.Context):
+        await ctx.reply("Link to `blist` usage")
+
+    @commands.has_guild_permissions(manage_guild=True)
+    @blist.command(name='add')
+    async def blist_add(self, ctx: commands.Context, channelID):
+        channelID = channelID or ctx.channel.id
+        channelID = int(channelID)
+        guildDB = await getOrCreateGuild(ctx.guild.id)
+        if guildDB.whitelistedChannels.__contains__(channelID):
+            await ctx.send("info: channel is already in whitelist\nremoving and adding to blacklist")
+            guildDB.whitelistedChannels.remove(channelID)
+        guildDB.blacklistedChannels.append(channelID)
+        await guildDB.save()
+        await ctx.message.add_reaction("✅")
+
+    @commands.has_guild_permissions(manage_guild=True)
+    @blist.command(name='rm')
+    async def blist_rm(self, ctx: commands.Context, channelID):
+        channelID = channelID or ctx.channel.id
+        channelID = int(channelID)
+        guildDB = await getOrCreateGuild(ctx.guild.id)
+        if guildDB.blacklistedChannels.__contains__(channelID):
+            guildDB.blacklistedChannels.remove(channelID)
+            await ctx.message.add_reaction("✅")
+            await guildDB.save()
+        else:
+            await ctx.send("the channel is not blacklisted, aborting")
+            await ctx.message.add_reaction("❌")
+
     @commands.has_guild_permissions(manage_guild=True)
     @mode.command(name="set")
     async def mode_set(self, ctx: commands.Context, mode: str):
         if not mode:
-            raise commands.MissingRequiredArgument(mode)
+            raise commands.MissingRequiredArgument("specify a mode")
         if mode.lower() == "wlist" or "whitelist":
-            dbguild = await guild[ctx.guild.id]
+            dbguild = await getOrCreateGuild(ctx.guild.id)
             dbguild.whitelist = True
             await dbguild.save()
             await ctx.message.add_reaction("✅")
         elif mode.lower() == "blist" or "blacklist":
-            dbguild = await guild[ctx.guild.id]
+            dbguild = await getOrCreateGuild(ctx.guild.id)
             dbguild.whitelist = False
             await dbguild.save()
             await ctx.message.add_reaction("✅")
