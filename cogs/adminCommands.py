@@ -46,7 +46,9 @@ class adminCommands(commands.Cog):
             attr = ""
             try:
                 attr = getattr(guild_entry, field)
-                getEmbed.add_field(name=field, value=attr)
+                if guild_entry == 'unpinChannel':
+                    getEmbed.add_field(name=field, value=f'<#{attr}>')
+
             except AttributeError:
                 pass
         await ctx.reply(embed=getEmbed)
