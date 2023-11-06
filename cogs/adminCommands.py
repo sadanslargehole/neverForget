@@ -5,7 +5,8 @@ from discord.ext import commands
 import util
 from classes.Models import guild, user
 from format import formatMessage
-from util import getOrCreateGuild, genEnableMessage
+from util import getOrCreateGuild
+from util import genEnableMessage
 from typing import Union, Dict
 
 guild_fields = ["canUseBot", "unpinChannel", "enabled", 'whitelist', 'whitelistedChannels', 'blacklistedChannels',
