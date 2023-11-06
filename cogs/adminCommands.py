@@ -30,9 +30,19 @@ class adminCommands(commands.Cog):
     @commands.has_guild_permissions(manage_guild=True)
     @wlist.command(name='add')
     async def wlist_add(self, ctx: commands.Context, channelID):
+        channelID = int(channelID or ctx.guild.id)
         guildDB = await getOrCreateGuild(ctx.guild.id)
-        guildDB.whitelistedChannels.append(channelID)
-        await guildDB.save()
+        if guildDB.whitelistedChannels.__contains__(channelID):
+            await ctx.reply("whitelisted channels already contains this channel, aborting")
+            return
+        elif guildDB.blacklistedChannels.__contains__(channelID):
+            await ctx.reply("blacklisted channels already contains this channel, removing")
+            guildDB.blacklistedChannels.remove(channelID)
+            guildDB.whitelistedChannels.append(channelID)
+            await guildDB.save()
+        else:
+            guildDB.whitelistedChannels.append(channelID)
+            await guildDB.save()
 
     @commands.guild_only()
     @commands.has_guild_permissions(manage_guild=True)
@@ -81,11 +91,6 @@ class adminCommands(commands.Cog):
         await guildDB.save()
         await ctx.message.add_reaction('✔')
 
-    @commands.has_guild_permissions(manage_guild=True)
-    @commands.group(invoke_without_command=True)
-    async def mode(self, ctx: commands.Context):
-        await ctx.reply("[usage](https://github.com/sadanslargehole/neverForget/blob/master/_SETUP/modeUsage.md)")
-
     @commands.group(invoke_without_command=True)
     @commands.has_guild_permissions(manage_guild=True)
     async def blist(self, ctx: commands.Context):
@@ -117,6 +122,11 @@ class adminCommands(commands.Cog):
         else:
             await ctx.send("the channel is not blacklisted, aborting")
             await ctx.message.add_reaction("❌")
+
+    @commands.has_guild_permissions(manage_guild=True)
+    @commands.group(invoke_without_command=True)
+    async def mode(self, ctx: commands.Context):
+        await ctx.reply("[usage](https://github.com/sadanslargehole/neverForget/blob/master/_SETUP/modeUsage.md)")
 
     @commands.has_guild_permissions(manage_guild=True)
     @mode.command(name="set")

@@ -51,7 +51,7 @@ async def setupGuild(bot: classes.bot.bot, guild: discord.Guild, user: discord.U
         user = await getInviterOrOwner(bot, guild)
     if not channel:
         channel = getChannelOrRand(guild)
-
+    await getOrCreateGuild(guild.id)
     await guild.get_channel(channel.id).send(content=f"{user.mention} \n# SETUP THE BOT HERE\nhttps://github.com/sadanslargehole/neverForget/blob/master/_SETUP/README.md", allowed_mentions=discord.AllowedMentions(users=True, replied_user=True, everyone=False, roles=False) )
 
 
