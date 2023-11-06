@@ -3,12 +3,13 @@ from json import load
 
 import discord
 from tortoise import Tortoise
+from classes.Models import guild
 
 import classes.bot
 
 
-def loadconfig() -> dict[str, str]:
-    with open('./config.json',"r" ) as cfg:
+def loadconfig() -> dict:
+    with open('./config.json', "r") as cfg:
         return load(cfg)
 
 
@@ -43,20 +44,40 @@ async def getChannelOrRand(guild: discord.Guild) -> discord.TextChannel:
             if isinstance(i, discord.TextChannel):
                 return i
 
-
+# FIXME - update setupGuild
 async def setupGuild(bot: classes.bot.bot, guild: discord.Guild, user: discord.User | None = None, channel: discord.TextChannel = None):
     if not user:
         user = await getInviterOrOwner(bot, guild)
     if not channel:
         channel = getChannelOrRand(guild)
-    embedWlistBlist = discord.Embed(title=f"{user.mention} Lets setup your bot",
-                          description=f"Would you like whitelist or blacklist mode?\n**Whitelist mode**\nWhitelist mode only logs unpins in the channels you choose.\nTo add/remove a channel to/from the whitelist run {bot.config['prefix']}wlist <add|rm> [channel id].\n**Blacklist mode**\nLogs unpins in all channels except for the ones that you don't want.\nTo add/remove a channel to/from the blacklist run {bot.config['prefix']}blist <add|rm> [channel id].",
-                          colour=0x00ff6e,
-                          timestamp=datetime.now())
 
-    embedWlistBlist.set_author(name="Setup your server!")
+    await guild.get_channel(channel.id).send(content=f"{user.mention} \n# SETUP THE BOT HERE\nhttps://github.com/sadanslargehole/neverForget/blob/master/_SETUP/README.md", allowed_mentions=discord.AllowedMentions.users, )
 
-    embedWlistBlist.set_footer(text="Made by sadanslargehole :3",
-                     icon_url="https://slate.dan.onl/slate.png")
 
-    await guild.get_channel(channel.id).send(embed=embedWlistBlist, allowed_mentions=discord.AllowedMentions.users, )
+async def getOrCreateGuild(gID: int) -> guild:
+    toRet = await guild.get_or_create({
+            'id': gID,
+            "canUseBot": True,
+            'unpinChannel': None,
+            'enabled': False,
+            'whitelist': None,
+            'whitelistedChannels': [],
+            'blacklistedChannels': [],
+            'blacklistedUsers': []
+        },
+
+    )
+    return toRet[0]
+
+
+async def genDefaultGuild(gID: int) -> guild:
+    return await guild.create(
+            id=gID,
+            canUseBot=True,
+            unpinChannel=None,
+            enabled=False,
+            whitelist=None,
+            whitelistedChannels=[],
+            blacklistedChannels=[],
+            blacklistedUsers=[]
+    )

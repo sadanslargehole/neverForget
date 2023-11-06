@@ -1,19 +1,16 @@
 import discord
 from discord.ext import commands
-from classes.bot import bot
 from classes.Models import guild
 
-class botEvents:
-    def __init__(self, robot: bot):
+
+class botEvents(commands.Cog):
+    def __init__(self, robot: commands.Bot):
         self.bot = robot
 
     @commands.Cog.listener("guild join")
     async def guildJoin(self, guildJoined: discord.Guild):
-        if guild.filter(id=guildJoined.id).exists():
+        guildDB = guild.get_or_none(id)
 
 
-    @commands.Cog.listener("message button click")
-    async def onButtonthingieClick(self, ):
-        # whitelist/blacklist
-        #
-        pass
+async def setup(bot: commands.Bot):
+    await bot.add_cog(botEvents(bot))

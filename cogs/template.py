@@ -6,7 +6,7 @@ class cogName(commands.Cog):
     def __init__(self, bot: commands.Bot):
         self.bot = bot
 
-    @commands.command("ALIAS HERE")
+    @commands.command(aliases=["1", "2"])
     async def thisIsACommand(self, ctx: commands.Context, *args):
         # DO SOMETHING
         pass
