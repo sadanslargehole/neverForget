@@ -180,12 +180,12 @@ class adminCommands(commands.Cog):
     @commands.command(name='enable')
     @commands.has_guild_permissions(manage_guild=True)
     async def enable(self, ctx: commands.Context):
-        guildDB = await getOrCreateGuild(ctx.guild.id)
-        result, message = genEnableMessage(guildDB)
+        result, message = genEnableMessage(ctx.guild.id)
         if result:
             await ctx.send(message)
         else:
             await ctx.send(message)
+            guildDB = await getOrCreateGuild(ctx.guild.id)
             guildDB.enabled = True
             await guildDB.save()
 

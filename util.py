@@ -74,7 +74,8 @@ async def getOrCreateGuild(gID: int) -> guild:
     return toRet[0]
 
 
-def genEnableMessage(guildDB: guild) -> tuple[bool, str]:
+async def genEnableMessage(guildID: int) -> tuple[bool, str]:
+    guildDB = await getOrCreateGuild(guildID)
     codeblockHeader = "```ansi"
     codeblockFooter = "```"
     modeInfoWhitelist = "[2;36mINFO - Mode is whitelist[0m\n"
