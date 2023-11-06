@@ -9,7 +9,7 @@ class guild(Model):
     unpinChannel = fields.IntField(null=True)
     enabled = fields.BooleanField()
     whitelist = fields.BooleanField(null=True)
-    whitelistedChannels = fields.JSONField()
+    whitelistedChannels: list = fields. JSONField()
     blacklistedChannels = fields.JSONField()
     blacklistedUsers = fields.JSONField()
 

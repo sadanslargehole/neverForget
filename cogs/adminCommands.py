@@ -1,10 +1,13 @@
 import discord
+from discord import Role, Member, Object, PermissionOverwrite
 from discord.ext import commands
 from classes.Models import guild, user
 from format import formatMessage
 from util import getOrCreateGuild
+from typing import Union, Dict
 
-guild_fields = ["canUseBot", "unpinChannel", "enabled", 'whitelist', 'whitelistedChannels', 'blacklistedChannels', 'blacklistedUsers']
+guild_fields = ["canUseBot", "unpinChannel", "enabled", 'whitelist', 'whitelistedChannels', 'blacklistedChannels',
+                'blacklistedUsers']
 
 
 class adminCommands(commands.Cog):
@@ -18,9 +21,9 @@ class adminCommands(commands.Cog):
 
     @commands.has_guild_permissions(manage_guild=True)
     @wlist.command(name='add')
-    async def wlist_add(self, ctx:commands.Context, channelID):
+    async def wlist_add(self, ctx: commands.Context, channelID):
         guildDB = await getOrCreateGuild(ctx.guild.id)
-        guildDB.whitelistedChannels =
+        guildDB.whitelistedChannels.append(channelID)
 
     @commands.guild_only()
     @commands.has_guild_permissions(manage_guild=True)
@@ -34,7 +37,7 @@ class adminCommands(commands.Cog):
         for field in guild_fields:
             attr = ""
             try:
-                attr =  getattr(guild_entry, field)
+                attr = getattr(guild_entry, field)
                 getEmbed.add_field(name=field, value=attr)
             except AttributeError:
                 pass
@@ -44,8 +47,24 @@ class adminCommands(commands.Cog):
     @log.command()
     @commands.has_guild_permissions(manage_guild=True)
     async def setup(self, ctx: commands.Context):
-        # TODO: create channel with perms
-        pass
+        channel = await ctx.guild.create_text_channel('Pinned-Messages-Log')
+        # allow roles to send messages
+        overites: Dict[Union[Role, Member, Object], PermissionOverwrite] = {
+            ctx.guild.default_role: discord.PermissionOverwrite(
+                read_messages=True,
+                send_messages=False
+            )
+        }
+        for role in ctx.guild.roles:
+            if role.permissions.manage_guild or role.permissions.manage_messages or role.permissions.manage_channels:
+                overites[role] = discord.PermissionOverwrite(read_messages=True,
+                                                             manage_messages=True,
+                                                             send_messages=True)
+        await channel.edit(overwrites=overites)
+        guildDB = await getOrCreateGuild(ctx.guild.id)
+        guildDB.unpinChannel = channel.id
+        await guildDB.save()
+        await ctx.message.add_reaction('✔')
 
     @log.command(name="msg")
     @commands.has_guild_permissions(manage_guild=True)
@@ -91,4 +110,3 @@ class adminCommands(commands.Cog):
 
 async def setup(bot: commands.Bot):
     await bot.add_cog(adminCommands(bot))
-
