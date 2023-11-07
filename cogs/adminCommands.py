@@ -10,7 +10,7 @@ from util import genEnableMessage
 from typing import Union, Dict
 
 guild_fields = ["canUseBot", "unpinChannel", "enabled", 'whitelist', 'whitelistedChannels', 'blacklistedChannels',
-                'blacklistedUsers']
+                'blacklistedUsers', "logAtPin"]
 
 
 class adminCommands(commands.Cog):
@@ -176,6 +176,25 @@ class adminCommands(commands.Cog):
             await ctx.message.add_reaction("✅")
         else:
             raise commands.BadArgument(mode)
+
+    @commands.guild_only()
+    @commands.has_guild_permissions(manage_guild=True)
+    @mode.command(name='time')
+    async def mode_time(self, ctx: commands.Context, time: str):
+        if not time:
+            raise commands.MissingRequiredArgument(ctx.command.params['time'])
+        if time.lower() == 'pin':
+            guildDB = await getOrCreateGuild(ctx.guild.id)
+            guildDB.logAtPin = True
+            await guildDB.save()
+            await ctx.message.add_reaction("✅")
+        elif time.lower() == 'unpin':
+            guildDB = await getOrCreateGuild(ctx.guild.id)
+            guildDB.logAtPin = False
+            await guildDB.save()
+            await ctx.message.add_reaction("✅")
+        else:
+            raise commands.BadArgument(time)
 
     @commands.command(name="disable")
     @commands.has_guild_permissions(manage_guild=True)
