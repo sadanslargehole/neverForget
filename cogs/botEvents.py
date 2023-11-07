@@ -12,7 +12,7 @@ class botEvents(commands.Cog):
 
     @commands.Cog.listener(name="on_guild_join")
     async def guildJoin(self, guildJoined: discord.Guild):
-        guildDB = await getOrCreateGuild(guild.id)
+        guildDB = await getOrCreateGuild(guildJoined.id)
         await setupGuild(self.bot, guildJoined)
 
 
