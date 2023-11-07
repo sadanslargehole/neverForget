@@ -35,25 +35,25 @@ async def getInviterOrOwner(bot: classes.bot.bot, guild: discord.Guild) -> disco
     return user
 
 
-async def getChannelOrRand(guild: discord.Guild) -> discord.TextChannel:
-    if guild.system_channel:
-        return guild.system_channel
+async def getChannelOrRand(guildToGet: discord.Guild) -> discord.TextChannel:
+    if guildToGet.system_channel:
+        return guildToGet.system_channel
     else:
-        channels = guild.channels
+        channels = guildToGet.channels
         for i in channels:
             if isinstance(i, discord.TextChannel):
                 return i
 
 
 # FIXME - update setupGuild
-async def setupGuild(bot: classes.bot.bot, guild: discord.Guild, user: discord.User | None = None,
-                     channel: discord.TextChannel = None):
+async def setupGuild(bot: classes.bot.bot, joinedGuild: discord.Guild, user: discord.User | None = None,
+                     channelToSendIn: discord.TextChannel = None):
     if not user:
-        user = await getInviterOrOwner(bot, guild)
-    if not channel:
-        channel = getChannelOrRand(guild)
-    await getOrCreateGuild(guild.id)
-    await guild.get_channel(channel.id).send(
+        user = await getInviterOrOwner(bot, joinedGuild)
+    if not channelToSendIn:
+        channelToSendIn = getChannelOrRand(joinedGuild)
+    await getOrCreateGuild(joinedGuild.id)
+    await joinedGuild.get_channel(channelToSendIn.id).send(
         content=f"{user.mention} \n# SETUP THE BOT HERE\nhttps://github.com/sadanslargehole/neverForget/blob/master/_SETUP/README.md",
         allowed_mentions=discord.AllowedMentions(users=True, replied_user=True, everyone=False, roles=False))
 
