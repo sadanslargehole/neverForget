@@ -81,6 +81,8 @@ async def genEnableMessage(guildID: int) -> tuple[bool, str]:
     codeblockHeader = "```ansi"
     codeblockFooter = "```"
     modeInfoWhitelist = "[2;36mINFO - Mode is whitelist[0m\n"
+    modeInfoLogAtPin = "[2;36mINFO - Logging at unpin[0m\n"
+    modeInfoLogAtUnpin = "[2;36mINFO - Logging at pin[0m\n"
     modeInfoUnpinChannel = "[2;36mINFO - Logging Channel: $CHANNEL$[0m\n"
     modeInfoBlacklist = "[2;36mINFO - Mode is blacklist[0m\n"
     whitelistedChannels = "[2;36mINFO - Whitelisted channels: $CHANNELS$[0m\n"
@@ -93,6 +95,10 @@ async def genEnableMessage(guildID: int) -> tuple[bool, str]:
     errorsFound = "[2;41mErrors Found, Aborted[0m\n"
     message = codeblockHeader + "\n"
     errors = False
+    if guildDB.logAtPin:
+        message += modeInfoLogAtPin
+    else:
+        message += modeInfoLogAtUnpin
     if guildDB.whitelist is None:
         message += errorNoModeSet
     elif guildDB.whitelist:
@@ -129,7 +135,8 @@ async def genDefaultGuild(gID: int) -> guild:
         whitelist=None,
         whitelistedChannels=[],
         blacklistedChannels=[],
-        blacklistedUsers=[]
+        blacklistedUsers=[],
+        logAtPin=False
     )
 
 

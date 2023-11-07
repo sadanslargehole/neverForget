@@ -43,7 +43,6 @@ class bot(commands.Bot):
 
     # stolen from letters
     async def on_command_error(self, ctx: commands.Context, exe: errors.CommandError, /) -> None:
-        delay = 10
         excname = type(exe).__name__
         errembed = discord.Embed(
             title=f"{excname} error",
@@ -87,4 +86,3 @@ class bot(commands.Bot):
             print(f"{excname}: {exe}")
 
         errmsg = await ctx.send(embed=errembed)
-        await errmsg.delete(delay=delay)

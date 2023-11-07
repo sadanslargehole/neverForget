@@ -33,3 +33,8 @@ async def formatMessage(m: discord.Message) -> discord.Embed:
 
     embed.set_footer(text="made by sadanslargehole")
     return embed
+
+
+async def formatAndSend(after, guildDB):
+    embed = await formatMessage(after)
+    await after.guild.get_channel(guildDB.unpinChannel).send(embed=embed)
