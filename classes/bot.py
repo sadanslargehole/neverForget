@@ -30,10 +30,17 @@ class bot(commands.Bot):
 
         self.config = config
 
+
+
     async def on_message(self, message: discord.Message, /) -> None:
-        if message.author.id == 628661615503474698:
-            if random.randint(1, 80) == 1:
-                await message.add_reaction("🖕")
+        if message.author.bot:
+            return
+        try:
+            if message.author.id == 628661615503474698:
+                if random.randint(1, 80) == 1:
+                    await message.add_reaction("🖕")
+        except Exception as e:
+            pass
         if self.enabled:
             await self.process_commands(message)
         elif message.author.id == self.owner_id:
