@@ -14,12 +14,12 @@ class ownerCommands(commands.Cog):
 
     @commands.is_owner()
     @commands.command()
-    async def enable(self, ctx: commands.Context):
+    async def enablebot(self, ctx: commands.Context):
         self.bot.enabled = True
 
     @commands.is_owner()
     @commands.command()
-    async def disable(self, ctx: commands.Context):
+    async def disablebot(self, ctx: commands.Context):
         self.bot.enabled = False
 
     @commands.is_owner()
@@ -38,7 +38,7 @@ class ownerCommands(commands.Cog):
     @commands.is_owner()
     @commands.group(invoke_without_command=True)
     async def db(self, ctx: commands.Context, *args):
-        await ctx.reply("nope :3")
+        await ctx.send("nope :3")
 
     @commands.command()
     @commands.is_owner()
@@ -49,21 +49,18 @@ class ownerCommands(commands.Cog):
     @db.command(name='wipe')
     @commands.is_owner()
     # wipes and refreshed the guild db
-    # TODO: fix this horror code
-    async def db_wipe(self, ctx: commands.Context, guildID):
-        guildID = guildID or ctx.guild.id
-        guildID = int(guildID)
-        await getOrCreateGuild(guildID)
-        guildDB = await guild[guildID]
-        await guildDB.delete()
+    async def db_wipe(self, ctx: commands.Context, guildID=None):
+        guildID = int(guildID or ctx.guild.id)
+        guildDB = await guild.get_or_none(id=guildID)
+        if guildDB:
+            await guildDB.delete()
         await getOrCreateGuild(guildID)
         await ctx.message.add_reaction("✔")
 
     @commands.is_owner()
     @db.command(name='get')
-    async def db_get(self, ctx: commands.Context, guildID):
-        guildID = guildID or ctx.guild.id
-        guildID = int(guildID)
+    async def db_get(self, ctx: commands.Context, guildID=None):
+        guildID = int(guildID or ctx.guild.id)
         guild_entry = await getOrCreateGuild(guildID)
         getEmbed = discord.Embed(
             title=f"Guild.{guildID}"
@@ -80,6 +77,7 @@ class ownerCommands(commands.Cog):
             except AttributeError:
                 pass
         await ctx.reply(embed=getEmbed)
+
 
 async def setup(bot: classes.bot.bot):
     await bot.add_cog(ownerCommands(bot))
