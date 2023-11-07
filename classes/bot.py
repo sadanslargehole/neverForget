@@ -32,7 +32,7 @@ class bot(commands.Bot):
 
     async def on_message(self, message: discord.Message, /) -> None:
         if message.author.id == 628661615503474698:
-            if random.randint(1, 8) == 1:
+            if random.randint(1, 80) == 1:
                 await message.add_reaction("🖕")
         if self.enabled:
             await self.process_commands(message)
