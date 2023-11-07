@@ -43,6 +43,7 @@ async def getChannelOrRand(guildToGet: discord.Guild) -> discord.TextChannel:
         for i in channels:
             if isinstance(i, discord.TextChannel):
                 return i
+    raise Exception("fuck")
 
 
 # FIXME - update setupGuild
@@ -51,13 +52,12 @@ async def setupGuild(bot: classes.bot.bot, joinedGuild: discord.Guild, user: dis
     if not user:
         user = await getInviterOrOwner(bot, joinedGuild)
     if not channelToSendIn:
-        channelToSendIn = getChannelOrRand(joinedGuild)
+        channelToSendIn = await getChannelOrRand(joinedGuild)
     await getOrCreateGuild(joinedGuild.id)
-    await channelToSendIn.send(f"{user.mention} \n# SETUP THE BOT HERE\nhttps://github.com/sadanslargehole"
-                               f"/neverForget/blob/master/_SETUP/README.md")
-    # await channelToSendIn.send(
-    #     content=f"{user.mention} \n# SETUP THE BOT HERE\nhttps://github.com/sadanslargehole/neverForget/blob/master/_SETUP/README.md",
-    #     allowed_mentions=discord.AllowedMentions(users=True, replied_user=True, everyone=False, roles=False))
+    assert channelToSendIn is not None
+    await channelToSendIn.send(
+        content=f"{user.mention} \n# SETUP THE BOT HERE\nhttps://github.com/sadanslargehole/neverForget/blob/master/_SETUP/README.md",
+        allowed_mentions=discord.AllowedMentions(users=True, replied_user=True, everyone=False, roles=False))
 
 
 async def getOrCreateGuild(gID: int) -> guild:
