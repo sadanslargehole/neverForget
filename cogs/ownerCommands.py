@@ -62,7 +62,7 @@ class ownerCommands(commands.Cog):
     async def getBase(self, ctx: commands.Context):
         await ctx.send_help()
 
-    @get.command(name="guilds")
+    @getBase.command(name="guilds")
     @commands.is_owner()
     async def getGuilds(self, ctx, page: int = 1, safe: bool = True):
         # guild.name, guild.id, guild.members, ctx.bot.guilds is amount of guilds, tally_users(ctx.bot)
