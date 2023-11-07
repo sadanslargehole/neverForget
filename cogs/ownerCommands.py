@@ -5,7 +5,7 @@ from discord.ext.commands import BucketType
 import classes.bot
 from classes.Models import guild
 from cogs.adminCommands import guild_fields
-from util import genDefaultGuild, getOrCreateGuild
+from util import genDefaultGuild, getOrCreateGuild, paginate_list, tally_users
 
 
 class ownerCommands(commands.Cog):
@@ -56,6 +56,33 @@ class ownerCommands(commands.Cog):
             await guildDB.delete()
         await getOrCreateGuild(guildID)
         await ctx.message.add_reaction("✔")
+
+    @commands.is_owner()
+    @commands.group(invoke_without_command=True, name="get")
+    async def getBase(self, ctx: commands.Context):
+        await ctx.send_help()
+
+    @getBase.command(name="guilds")
+    @commands.is_owner()
+    async def getGuilds(self, ctx, page: int = 1, safe: bool = True):
+        # guild.name, guild.id, guild.members, ctx.bot.guilds is amount of guilds, tally_users(ctx.bot)
+        gembed = discord.Embed(
+            title=f"Guilds (page {page}) ",
+            color=discord.Color.blurple()
+        )
+        guilds = paginate_list(ctx.bot.guilds, 10, page)
+        if len(guilds) == 0:
+            return await ctx.send("That page doesn't exist!")
+        for oneGuild in guilds:
+            if safe:
+                gembed.add_field(name=oneGuild.name, value=f"{oneGuild.member_count} members")  # ??
+            else:
+                gembed.add_field(name=f"{oneGuild.name} ({oneGuild.id})",
+                                 value=f"{oneGuild.member_count} members, owned by {oneGuild.owner}")
+
+        gembed.set_footer(text=f"{len(ctx.bot.guilds)} guilds, {tally_users(ctx.bot)} unique users")
+
+        await ctx.send(embed=gembed)
 
     @commands.is_owner()
     @db.command(name='get')

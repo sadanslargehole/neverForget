@@ -1,3 +1,4 @@
+import random
 from typing import Type
 import difflib
 from discord import app_commands
@@ -29,7 +30,17 @@ class bot(commands.Bot):
 
         self.config = config
 
+
+
     async def on_message(self, message: discord.Message, /) -> None:
+        if message.author.bot:
+            return
+        try:
+            if message.author.id == 628661615503474698:
+                if random.randint(1, 80) == 1:
+                    await message.add_reaction("🖕")
+        except Exception as e:
+            pass
         if self.enabled:
             await self.process_commands(message)
         elif message.author.id == self.owner_id:
@@ -39,7 +50,6 @@ class bot(commands.Bot):
 
     # stolen from letters
     async def on_command_error(self, ctx: commands.Context, exe: errors.CommandError, /) -> None:
-        delay = 10
         excname = type(exe).__name__
         errembed = discord.Embed(
             title=f"{excname} error",
@@ -83,4 +93,3 @@ class bot(commands.Bot):
             print(f"{excname}: {exe}")
 
         errmsg = await ctx.send(embed=errembed)
-        await errmsg.delete(delay=delay)

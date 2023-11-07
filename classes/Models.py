@@ -8,6 +8,7 @@ class guild(Model):
     canUseBot = fields.BooleanField()
     unpinChannel = fields.IntField(null=True)
     enabled = fields.BooleanField()
+    logAtPin = fields.BooleanField()
     whitelist = fields.BooleanField(null=True)
     whitelistedChannels: list = fields. JSONField()
     blacklistedChannels: list = fields.JSONField()

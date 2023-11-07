@@ -10,7 +10,7 @@ from util import genEnableMessage
 from typing import Union, Dict
 
 guild_fields = ["canUseBot", "unpinChannel", "enabled", 'whitelist', 'whitelistedChannels', 'blacklistedChannels',
-                'blacklistedUsers']
+                'blacklistedUsers', "logAtPin"]
 
 
 class adminCommands(commands.Cog):
@@ -164,18 +164,37 @@ class adminCommands(commands.Cog):
     async def mode_set(self, ctx: commands.Context, mode: str):
         if not mode:
             raise commands.MissingRequiredArgument(ctx.command.params['mode'])
-        if mode.lower() == "wlist" or "whitelist":
+        if ["wlist", "whitelist"].__contains__(mode.lower()):
             dbguild = await getOrCreateGuild(ctx.guild.id)
             dbguild.whitelist = True
             await dbguild.save()
             await ctx.message.add_reaction("✅")
-        elif mode.lower() == "blist" or "blacklist":
+        elif ["blist", "blacklist"].__contains__(mode.lower()):
             dbguild = await getOrCreateGuild(ctx.guild.id)
             dbguild.whitelist = False
             await dbguild.save()
             await ctx.message.add_reaction("✅")
         else:
             raise commands.BadArgument(mode)
+
+    @commands.guild_only()
+    @commands.has_guild_permissions(manage_guild=True)
+    @mode.command(name='time')
+    async def mode_time(self, ctx: commands.Context, time: str):
+        if not time:
+            raise commands.MissingRequiredArgument(ctx.command.params['time'])
+        if time.lower() == 'pin':
+            guildDB = await getOrCreateGuild(ctx.guild.id)
+            guildDB.logAtPin = True
+            await guildDB.save()
+            await ctx.message.add_reaction("✅")
+        elif time.lower() == 'unpin':
+            guildDB = await getOrCreateGuild(ctx.guild.id)
+            guildDB.logAtPin = False
+            await guildDB.save()
+            await ctx.message.add_reaction("✅")
+        else:
+            raise commands.BadArgument(time)
 
     @commands.command(name="disable")
     @commands.has_guild_permissions(manage_guild=True)
