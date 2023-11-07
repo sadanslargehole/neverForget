@@ -59,12 +59,12 @@ class ownerCommands(commands.Cog):
 
     @commands.is_owner()
     @commands.group(invoke_without_command=True, name="get")
-    async def get(self, ctx: commands.Context):
+    async def getBase(self, ctx: commands.Context):
         await ctx.send_help()
 
-    @commands.command()
+    @get.command(name="guilds")
     @commands.is_owner()
-    async def guilds(self, ctx, page: int = 1, safe: bool = True):
+    async def getGuilds(self, ctx, page: int = 1, safe: bool = True):
         # guild.name, guild.id, guild.members, ctx.bot.guilds is amount of guilds, tally_users(ctx.bot)
         gembed = discord.Embed(
             title=f"Guilds (page {page}) ",
