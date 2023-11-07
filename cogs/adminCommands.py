@@ -162,17 +162,14 @@ class adminCommands(commands.Cog):
     @commands.has_guild_permissions(manage_guild=True)
     @mode.command(name="set")
     async def mode_set(self, ctx: commands.Context, mode: str):
-        await ctx.send(mode)
-        await ctx.send(mode.lower() == "wlist" or "whitelist")
-        await ctx.send(mode.lower() == "blist" or "blacklist")
         if not mode:
             raise commands.MissingRequiredArgument(ctx.command.params['mode'])
-        if mode.lower() == "wlist" or "whitelist":
+        if ["wlist", "whitelist"].__contains__(mode.lower()):
             dbguild = await getOrCreateGuild(ctx.guild.id)
             dbguild.whitelist = True
             await dbguild.save()
             await ctx.message.add_reaction("✅")
-        elif mode.lower() == "blist" or "blacklist":
+        elif ["blist", "blacklist"].__contains__(mode.lower()):
             dbguild = await getOrCreateGuild(ctx.guild.id)
             dbguild.whitelist = False
             await dbguild.save()
