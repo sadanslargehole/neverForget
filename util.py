@@ -131,3 +131,22 @@ async def genDefaultGuild(gID: int) -> guild:
         blacklistedChannels=[],
         blacklistedUsers=[]
     )
+
+
+def paginate_list(list_items: list | tuple,
+                  per_page: int = 10, page: int = 1) -> list:  # ?????
+    page = page - 1
+    start = (page * per_page)
+    stop = start + per_page
+    return list_items[start:stop]
+
+
+def tally_users(bot) -> int:
+    count = 0
+    users_seen = []
+    for eachGuild in bot.guilds:
+        for member in eachGuild.members:
+            if member.id not in users_seen:
+                users_seen.append(member.id)
+                count += 1
+    return count
