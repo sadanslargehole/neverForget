@@ -66,6 +66,7 @@ async def getOrCreateGuild(gID: int) -> guild:
         "canUseBot": True,
         'unpinChannel': None,
         'enabled': False,
+        "logAtPin": False,
         'whitelist': None,
         'whitelistedChannels': [],
         'blacklistedChannels': [],
@@ -132,11 +133,11 @@ async def genDefaultGuild(gID: int) -> guild:
         canUseBot=True,
         unpinChannel=None,
         enabled=False,
+        logAtPin=False,
         whitelist=None,
         whitelistedChannels=[],
         blacklistedChannels=[],
         blacklistedUsers=[],
-        logAtPin=False
     )
 
 
