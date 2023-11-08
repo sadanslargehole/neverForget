@@ -56,7 +56,7 @@ async def setupGuild(bot: classes.bot.bot, joinedGuild: discord.Guild, user: dis
     await getOrCreateGuild(joinedGuild.id)
     assert channelToSendIn is not None
     await channelToSendIn.send(
-        content=f"{user.mention} \n# SETUP THE BOT HERE\nhttps://github.com/sadanslargehole/neverForget/blob/master/_SETUP/README.md",
+        content=f"{user.mention} \n# SETUP THE BOT HERE\nhttps://neverforget.sadanslargehole.com/",
         allowed_mentions=discord.AllowedMentions(users=True, replied_user=True, everyone=False, roles=False))
 
 

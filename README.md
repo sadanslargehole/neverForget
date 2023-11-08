@@ -9,3 +9,4 @@ the name is a work in progress
 
 #### credits
 - thanks to [keli5](https://github.com/keli5) for their letters bot project (the database code is lifted from them along with a few other things) 
+  - she also made the docs into a webpage
