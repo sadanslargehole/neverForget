@@ -1,0 +1,65 @@
+body {
+    background-color: rgb(32, 32, 32);
+    color: rgb(232, 232, 232);
+    font-family: 'Open Sans', sans-serif;
+    font-size: 1.15em;
+}
+
+main {
+    padding-left: 12.5vw;
+    padding-right: 12.5vw;
+    padding-top: 2vh;
+}
+
+h1 {
+    font-size: 2.25em;
+    text-align: center;
+}
+
+span.code {
+    display: inline;
+    font-family: 'Source Code Pro', monospace;
+    padding: 0.3em;
+    padding-top: 0;
+    padding-bottom: 0;
+    background-color: rgb(48, 48, 48);
+    border-radius: 3pt;
+}
+
+span.clickcopy a {
+    text-decoration: underline;
+    cursor: pointer;
+}
+
+a {
+    color: #D12923;
+}
+
+a.external::after {
+    content: " ⧉"
+}
+
+:visited {
+    color: #DE443F;
+    text-decoration: none;
+}
+
+strong.warning {
+    display: block;
+    text-align: center;
+    margin: auto;
+    background-color: rgba(219, 219, 20, 0.39);
+    padding: 4pt;
+    width: 75%;
+    border-radius: 6pt;
+}
+
+h2 {
+    margin-top: 24pt;
+    margin-bottom: 0;
+}
+
+p {
+    margin-bottom: 0;
+    margin-top: 12pt;
+}

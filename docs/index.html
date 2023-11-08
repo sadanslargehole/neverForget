@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>NeverForget Setup</title>
+        <link rel="stylesheet" href="styles.css">
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Open+Sans&family=Source+Code+Pro&display=swap" rel="stylesheet"> 
+    </head>
+    <body>
+        <main>
+            <h1>Setup</h1>
+            <h2>1. Selecting a mode</h2>
+            <hr />
+
+            <strong class="warning">Messages in private channels will be logged by default if you're using blacklist mode and those channels are not blacklisted!!!</strong>
+
+            <p><b>Whitelist mode</b> makes it so you have to choose channels where unpins are logged. You can mark and un-mark channels for logging with <span class="code">`wlist &lt;add | rm&gt; [channelID]</span>.</p>
+            <p><b>Blacklist mode</b> makes it so unpins are logged in all channels unless you explicitly mark them as ignored. You can mark and un-mark channels to be ignored with <span class="code">`blist &lt;add | rm&gt; [channelID]</span>.</p>
+            <p>To choose a mode, run <span class="code">`mode set blist</span> for blacklist mode, or <span class="code">`mode set wlist</span> for whitelist mode.</p>
+
+            <h2>2. Setting up a logging channel</h2>
+            <hr />
+            <p>To automatically set up a logging channel, run <span class="code">`log setup</span>. This will automatically create a log channel with the following defaults.</p>
+            <ul>
+                <li>@everyone will not be allowed to send messages</li>
+                <li>Any role with Manage Messages, Manage Server or Manage Channels will be able to send messages</li>
+                <li>The name <span class="code">#pinned-messages-log</span> will be set by default</li>
+            </ul>
+            <p>You can change the name, permissions, anything you like, as long as the channel is not deleted. If you'd prefer to use your own pre-existing channel, run <span class="code">`log set [channelID]</span>.</p>
+            <h2>3. Enable the bot</h2>
+            <hr />
+            <p>Run <span class="code">`enable</span>.</p>
+
+            <h2>Notes</h2>
+            <hr />
+            <p>The default prefix is <span class="code">`</span>. If you're self-hosting and have a custom prefix set, use that instead.</p>
+            <p>To report any bugs, contact <a href="https://discordapp.com/users/521819891141967883" class="external" target="_blank">sadanslargehole</a> on Discord.</p>
+        </main>
+    </body>
+</html>
