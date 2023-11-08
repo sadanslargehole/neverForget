@@ -43,7 +43,15 @@ a.external::after {
     color: #DE443F;
     text-decoration: none;
 }
-
+strong.info{
+    display: block;
+    text-align: center;
+    margin: auto;
+    background-color: rgba(0, 255, 255, 0.39);
+    padding: 4pt;
+    width: 75%;
+    border-radius: 6pt;
+}
 strong.warning {
     display: block;
     text-align: center;
